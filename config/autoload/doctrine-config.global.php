@@ -1,6 +1,5 @@
 <?php
 use Zend\Stdlib\ArrayUtils;
-use DoctrineModule\Version;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -8,14 +7,15 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 $vendorPath = __DIR__ . '/../../vendor';
-$doctrineModuleConfig = require_once "$vendorPath" . '/doctrine/doctrine-module/config/module.config.php';
-$doctrineModuleConfig['dependencies'] = $doctrineModuleConfig['service_manager'];
+$doctrineModuleConfig = [];
+$provider = new \DoctrineModule\ConfigProvider();
+$doctrineModuleConfig['dependencies'] = $provider->getDependencyConfig();
 unset($doctrineModuleConfig['service_manager']);
 unset($doctrineModuleConfig['dependencies']['factories']['doctrine.cli']);
 $doctrineModuleConfig['dependencies']['factories']['doctrine.cli'] = function(\Interop\Container\ContainerInterface $container){
     $cli = new Application;
     $cli->setName('DoctrineModule Command Line Interface');
-    $cli->setVersion(Version::VERSION);
+    $cli->setVersion('2.1.0');
     $cli->setHelperSet(new HelperSet);
     $cli->setCatchExceptions(true);
     $cli->setAutoExit(false);
